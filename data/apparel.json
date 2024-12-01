@@ -1,0 +1,34 @@
+{
+  "apparels": [
+    {
+      "code": "TSHIRT001",
+      "sizes": [
+        {
+          "size": "M",
+          "quantity": 10,
+          "price": 29.99
+        }
+      ]
+    },
+    {
+      "code": "TSHIRT002",
+      "sizes": [
+        {
+          "size": "M",
+          "quantity": 10,
+          "price": 29.99
+        }
+      ]
+    },
+    {
+      "code": "TSHIRT003",
+      "sizes": [
+        {
+          "size": "M",
+          "quantity": 10,
+          "price": 29.99
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+openapi: 3.0.0
+info:
+  title: Apparel Management System API
+  description: REST API for managing apparel inventory and orders
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+components:
+  schemas:
+    ApparelSize:
+      type: object
+      properties:
+        size:
+          type: string
+          example: "M"
+        quantity:
+          type: number
+          example: 10
+        price:
+          type: number
+          format: float
+          example: 29.99
+
+    StockUpdate:
+      type: object
+      required:
+        - code
+        - size
+        - quantity
+        - price
+      properties:
+        code:
+          type: string
+          example: "TSHIRT001"
+        size:
+          type: string
+          example: "M"
+        quantity:
+          type: number
+          example: 10
+        price:
+          type: number
+          format: float
+          example: 29.99
+
+    BulkStockUpdate:
+      type: array
+      items:
+        $ref: '#/components/schemas/StockUpdate'
+
+    OrderItem:
+      type: object
+      required:
+        - code
+        - size
+        - quantity
+      properties:
+        code:
+          type: string
+          example: "TSHIRT001"
+        size:
+          type: string
+          example: "M"
+        quantity:
+          type: number
+          example: 2
+
+    Order:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Failed to update stock"
+
+paths:
+  /apparel/stock:
+    put:
+      summary: Update stock for a single apparel item
+      tags:
+        - Apparel Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockUpdate'
+      responses:
+        '200':
+          description: Stock updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Stock updated successfully"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /apparel/stock/bulk:
+    put:
+      summary: Bulk update stock for multiple apparel items
+      tags:
+        - Apparel Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkStockUpdate'
+      responses:
+        '200':
+          description: Bulk stock update successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Bulk stock update successful"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /apparel/order/check:
+    post:
+      summary: Check if an order can be fulfilled
+      tags:
+        - Order Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Order fulfillment check result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  canFulfill:
+                    type: boolean
+                    example: true
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /apparel/order/cost:
+    post:
+      summary: Calculate the lowest cost for an order
+      tags:
+        - Order Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Order cost calculation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cost:
+                    type: number
+                    format: float
+                    example: 59.98
+        '400':
+          description: Order cannot be fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
